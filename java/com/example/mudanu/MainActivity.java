@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.mudanu.adapter.AboutAdapter;
 import com.example.mudanu.adapter.ListDaiAdapter;
+import com.example.mudanu.model.About;
 import com.example.mudanu.model.Dai;
 import com.example.mudanu.model.DaiData;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private RecyclerView rvGenmud;
     private ArrayList<Dai> list = new ArrayList<>();
+    private ArrayList<About> listabout = new ArrayList<>();
 
 
     @Override
@@ -37,23 +39,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         list.addAll(DaiData.getListData());
         showRecyclerList();
-/**
-        ImageButton btnMoveDataGenmud = findViewById(R.id.img_genmud_photo);
-        btnMoveDataGenmud.setOnClickListener(this);
-*/
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        Intent intent = new Intent(this, AboutAdapter.class);
-        intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()){
+            case R.id.main_menu:
+                showRecyclerList();
+                return true;
+            case R.id.about_menu:
+                showAboutMenu();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void showRecyclerList(){
@@ -70,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showAboutMenu(){
+        AboutAdapter aboutAdapter = new AboutAdapter(listabout);
+        rvGenmud.setAdapter(aboutAdapter);
     }
 
     private void showSelectedDai(Dai dai){
@@ -80,30 +86,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.rv_genmud:
-                Intent moveIntent = new Intent(MainActivity.this, GenmudActivity.class);
-                //coba tambah ini
-                moveIntent.putExtra(GenmudActivity.EXTRA_DESC, "desc");
-                //batas
-                startActivity(moveIntent);
                 break;
-                /*
-            case R.id.desc_view:
-                Intent GenmudActivity = new Intent(this, GenmudActivity.class);
-                GenmudActivity.putExtra(com.example.mudanu.GenmudActivity.EXTRA_NAME, "foto");
-                GenmudActivity.putExtra(com.example.mudanu.GenmudActivity.EXTRA_DESC, "desc");
-                startActivity(GenmudActivity);
-                break;
-                 */
         }
     }
 
     public void setMode(int selectedMode){
         switch (selectedMode){
             case R.id.activity_main:
+                showRecyclerList();
                 break;
             case R.id.about_menu:
-                Intent intent = new Intent(this, AboutActivity.class);
-                this.startActivity(intent);
+                showAboutMenu();
                 break;
         }
     }
